@@ -1,7 +1,5 @@
 app.controller('MainController', function ($scope, FlashCardsFactory, ScoreFactory) {
 
-	var selectedCategory = 'Reset';
-
 	$scope.categories = [
 		'MongoDB',
 		'Express',
@@ -10,21 +8,20 @@ app.controller('MainController', function ($scope, FlashCardsFactory, ScoreFacto
 	];
 
 	$scope.getCategoryCards = function (category) {
-		selectedCategory = category;
-	};
-	
-	$scope.flashCards = function () {
-		console.log("I just got called!!");
-		if(selectedCategory === 'Reset') {
-			return FlashCardsFactory.getFlashCards();
-		} else {
-			return FlashCardsFactory.getFlashCards(selectedCategory);
-		}
+		FlashCardsFactory.getFlashCards(category).then(function (data) {
+			$scope.flashCards =  data;
+		});
 	};
 
-	$scope.reset = function () {
-		selectedCategory = 'Reset';
-	};
+	$scope.getCategoryCards();
+
+	$scope.getAllCards = function () {
+        FlashCardsFactory.getFlashCards().then(function (data) {
+        	$scope.flashCards = data;
+        });
+    };
+
+    $scope.getAllCards();
 
 	$scope.answerQuestion = function (answer, flashCard) {
 		if (!flashCard.answered) {
@@ -39,7 +36,6 @@ app.controller('MainController', function ($scope, FlashCardsFactory, ScoreFacto
 		}
 	};
 });
-
 
 app.controller('StatsController', function ($scope, ScoreFactory) {
     $scope.scores = ScoreFactory;
